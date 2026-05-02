@@ -35,8 +35,10 @@ class _HomePageState extends State<HomePage> {
   int _total = 0;
 
   Future<void> _pickFolder() async {
-    String? dir = await FilePicker.platform.getDirectoryPath();
-    if (dir != null) setState(() => _inputFolder = dir);
+    final result = await FilePicker.platform.getDirectoryPath(
+      dialogTitle: 'Επέλεξε φάκελο με Stories',
+    );
+    if (result != null) setState(() => _inputFolder = result);
   }
 
   void _log(String msg) => setState(() => _logs.add(msg));
