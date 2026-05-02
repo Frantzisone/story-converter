@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'dart:io';
 
 void main() {
@@ -9,7 +8,6 @@ void main() {
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -25,7 +23,6 @@ class MyApp extends StatelessWidget {
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
-
   @override
   State<HomePage> createState() => _HomePageState();
 }
@@ -38,8 +35,6 @@ class _HomePageState extends State<HomePage> {
   int _total = 0;
 
   Future<void> _pickFolder() async {
-    await Permission.manageExternalStorage.request();
-    await Permission.storage.request();
     String? dir = await FilePicker.platform.getDirectoryPath();
     if (dir != null) setState(() => _inputFolder = dir);
   }
@@ -70,20 +65,14 @@ class _HomePageState extends State<HomePage> {
     for (final file in files) {
       final name = file.path.split('/').last;
       _log('🔄 Επεξεργασία: $name');
-
       final outputPath = '${output.path}/youtube_$name';
       final result = await Process.run('ffmpeg', [
         '-i', file.path,
         '-filter_complex',
         '[0:v]scale=606:1080[fg];[0:v]scale=1920:1080,boxblur=40:40[bg];[bg][fg]overlay=(W-w)/2:(H-h)/2',
-        '-c:v', 'libx264',
-        '-crf', '23',
-        '-preset', 'fast',
-        '-c:a', 'aac',
-        '-y',
-        outputPath,
+        '-c:v', 'libx264', '-crf', '23', '-preset', 'fast',
+        '-c:a', 'aac', '-y', outputPath,
       ]);
-
       if (result.exitCode == 0) {
         setState(() => _done++);
         _log('✅ Έτοιμο: $name');
@@ -120,21 +109,14 @@ class _HomePageState extends State<HomePage> {
             )),
             const SizedBox(height: 16),
             if (_isRunning) ...[
-              LinearProgressIndicator(
-                value: _total > 0 ? _done / _total : null,
-                color: const Color(0xFFE1306C),
-              ),
+              LinearProgressIndicator(value: _total > 0 ? _done / _total : null, color: const Color(0xFFE1306C)),
               const SizedBox(height: 8),
-              Text('$_done / $_total', textAlign: TextAlign.center,
-                  style: const TextStyle(fontWeight: FontWeight.bold)),
+              Text('$_done / $_total', textAlign: TextAlign.center, style: const TextStyle(fontWeight: FontWeight.bold)),
               const SizedBox(height: 8),
             ],
             ElevatedButton.icon(
               onPressed: _isRunning ? null : _start,
-              icon: _isRunning
-                  ? const SizedBox(width: 20, height: 20,
-                      child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2))
-                  : const Icon(Icons.play_arrow),
+              icon: _isRunning ? const SizedBox(width: 20, height: 20, child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2)) : const Icon(Icons.play_arrow),
               label: Text(_isRunning ? 'Επεξεργασία...' : 'Εκκίνηση'),
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color(0xFFE1306C),
@@ -149,8 +131,7 @@ class _HomePageState extends State<HomePage> {
                 padding: const EdgeInsets.all(8),
                 child: ListView.builder(
                   itemCount: _logs.length,
-                  itemBuilder: (_, i) => Text(_logs[i],
-                      style: const TextStyle(color: Colors.greenAccent, fontSize: 12)),
+                  itemBuilder: (_, i) => Text(_logs[i], style: const TextStyle(color: Colors.greenAccent, fontSize: 12)),
                 ),
               ),
             )),
