@@ -1,4 +1,4 @@
-name: Build APK
+ name: Build APK
 on:
   push:
     branches: [ main ]
@@ -21,6 +21,7 @@ jobs:
           flutter create --org com.example temp_app
           cp pubspec.yaml temp_app/pubspec.yaml
           cp lib/main.dart temp_app/lib/main.dart
+          cp android/app/src/main/AndroidManifest.xml temp_app/android/app/src/main/AndroidManifest.xml
           cd temp_app
           flutter pub get
           flutter build apk --release
