@@ -1,0 +1,23 @@
+name: story_converter
+description: Converts Instagram Stories to YouTube format.
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.0.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  file_picker: ^6.1.1
+  permission_handler: ^11.3.0
+  path_provider: ^2.1.2
+  ffmpeg_kit_flutter_full_gpl: ^6.0.3
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^3.0.0
+
+flutter:
+  uses-material-design: true
