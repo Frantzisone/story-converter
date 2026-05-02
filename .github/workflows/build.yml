@@ -1,27 +1,22 @@
-    name: Build APK
-
+name: Build APK
 on:
   push:
     branches: [ main ]
-
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-
       - name: Setup Java
         uses: actions/setup-java@v4
         with:
-          distribution: 'zulu'
+          distribution: zulu
           java-version: '17'
-
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.19.0'
-
-      - name: Create Flutter project
+          flutter-version: 3.19.0
+      - name: Build
         run: |
           flutter create --org com.example temp_app
           cp pubspec.yaml temp_app/pubspec.yaml
@@ -29,7 +24,6 @@ jobs:
           cd temp_app
           flutter pub get
           flutter build apk --release
-
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
