@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:ffmpeg_kit_flutter_new/ffmpeg_kit.dart';
-import 'package:ffmpeg_kit_flutter_new/return_code.dart';
 import 'dart:io';
 
 void main() {
@@ -74,12 +72,19 @@ class _HomePageState extends State<HomePage> {
       _log('🔄 Επεξεργασία: $name');
 
       final outputPath = '${output.path}/youtube_$name';
-      final cmd = '-i "${file.path}" -filter_complex "[0:v]scale=606:1080[fg];[0:v]scale=1920:1080,boxblur=40:40[bg];[bg][fg]overlay=(W-w)/2:(H-h)/2" -c:v h264_mediacodec -b:v 4M -c:a aac -y "$outputPath"';
+      final result = await Process.run('ffmpeg', [
+        '-i', file.path,
+        '-filter_complex',
+        '[0:v]scale=606:1080[fg];[0:v]scale=1920:1080,boxblur=40:40[bg];[bg][fg]overlay=(W-w)/2:(H-h)/2',
+        '-c:v', 'libx264',
+        '-crf', '23',
+        '-preset', 'fast',
+        '-c:a', 'aac',
+        '-y',
+        outputPath,
+      ]);
 
-      final session = await FFmpegKit.execute(cmd);
-      final code = await session.getReturnCode();
-
-      if (ReturnCode.isSuccess(code)) {
+      if (result.exitCode == 0) {
         setState(() => _done++);
         _log('✅ Έτοιμο: $name');
       } else {
@@ -129,4 +134,29 @@ class _HomePageState extends State<HomePage> {
               icon: _isRunning
                   ? const SizedBox(width: 20, height: 20,
                       child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2))
-                  : const Icon(Icons.
+                  : const Icon(Icons.play_arrow),
+              label: Text(_isRunning ? 'Επεξεργασία...' : 'Εκκίνηση'),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFFE1306C),
+                foregroundColor: Colors.white,
+                padding: const EdgeInsets.symmetric(vertical: 16),
+              ),
+            ),
+            const SizedBox(height: 16),
+            Expanded(child: Card(
+              color: Colors.black87,
+              child: Padding(
+                padding: const EdgeInsets.all(8),
+                child: ListView.builder(
+                  itemCount: _logs.length,
+                  itemBuilder: (_, i) => Text(_logs[i],
+                      style: const TextStyle(color: Colors.greenAccent, fontSize: 12)),
+                ),
+              ),
+            )),
+          ],
+        ),
+      ),
+    );
+  }
+}
