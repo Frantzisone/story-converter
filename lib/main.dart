@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:ffmpeg_kit_flutter_full_gpl/ffmpeg_kit.dart';
-import 'package:ffmpeg_kit_flutter_full_gpl/return_code.dart';
+import 'package:ffmpeg_kit_flutter_new/ffmpeg_kit.dart';
+import 'package:ffmpeg_kit_flutter_new/return_code.dart';
 import 'dart:io';
 
 void main() {
@@ -129,29 +129,4 @@ class _HomePageState extends State<HomePage> {
               icon: _isRunning
                   ? const SizedBox(width: 20, height: 20,
                       child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2))
-                  : const Icon(Icons.play_arrow),
-              label: Text(_isRunning ? 'Επεξεργασία...' : 'Εκκίνηση'),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFFE1306C),
-                foregroundColor: Colors.white,
-                padding: const EdgeInsets.symmetric(vertical: 16),
-              ),
-            ),
-            const SizedBox(height: 16),
-            Expanded(child: Card(
-              color: Colors.black87,
-              child: Padding(
-                padding: const EdgeInsets.all(8),
-                child: ListView.builder(
-                  itemCount: _logs.length,
-                  itemBuilder: (_, i) => Text(_logs[i],
-                      style: const TextStyle(color: Colors.greenAccent, fontSize: 12)),
-                ),
-              ),
-            )),
-          ],
-        ),
-      ),
-    );
-  }
-}
+                  : const Icon(Icons.
